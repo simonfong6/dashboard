@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container" >
+        <h1 class="display-3" >Dashboard</h1>
+        <p>Life Organizer</p>
+        <p><a class="btn btn-primary btn-lg" href="{{url_for('index')}}" role="button">Learn more »</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Technical</h2>
+          <p>We are dedicated to giving our members have the hands on experience that they need to suceed in the engineering field. To do this, we provide projects such as Micromouse and workshops that teach skills such as PCB designing.</p>
+          <p><a class="btn btn-secondary" href="{{url_for('index')}}" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Community</h2>
+          <p>We wish to bring the engineering community closer together and build their professional sklls along the way. HappEE Hour, our quarterly destresser, and resume workshops with industry partners help us achieve this. </p>
+          <p><a class="btn btn-secondary" href="{{url_for('index')}}" role="button">View details »</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Outreach</h2>
+          <p>We have are so fortunate to be where we are today that we want to give back to the community. Our specialty is engineering, so we want host events that help inspire and excite K-12 students to pursue STEM.</p>
+          <p><a class="btn btn-secondary" href="{{url_for('index')}}" role="button">View details »</a></p>
+        </div>
+      </div>
+{% endblock %}

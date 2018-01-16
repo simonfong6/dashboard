@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container" >
+        <h1 class="display-3" >Bookmarks</h1>
+        <p>Links to everything.</p>
+        <p><a class="btn btn-primary btn-lg" href="{{url_for('index')}}" role="button">Learn more »</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Example row of columns -->
+      <div class="row">
+        {% for class in classes %}
+        <div class="card m-1" style="width: 20rem;">
+          <div class="card-block">
+            <h4 class="card-title">{{class.title}}</h4>
+            <p class="card-text">{{class.description}}</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for resource in class.resources %}
+            <li class="list-group-item">
+              <a href="{{resource.link}}" class="card-link">{{resource.title}}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+{% endblock %}
