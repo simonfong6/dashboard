@@ -43,10 +43,14 @@ def index():
     return render_template('index.html')
  
  
-@app.route('/login')
-def login():
+@app.route('/google-login')
+def google_login():
     callback=url_for('authorized', _external=True)
     return google.authorize(callback=callback)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
     
 @app.route('/logout')
 def logout():
