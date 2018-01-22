@@ -1,2 +1,3 @@
 *.pyc
-api.py
+keys.py
+dashboard-credentials.json
