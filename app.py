@@ -2,7 +2,7 @@ import json
 from flask import Flask, redirect, url_for, session, render_template, g, request
 from flask_oauth import OAuth
 from functools import wraps
-from api import client_id, client_secret
+from keys import client_id, client_secret
  
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -37,28 +37,6 @@ def login_required(f):
             return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
-
-def get_info():
-    access_token = session.get('access_token')
-    if access_token is None:
-        return redirect(url_for('login'))
- 
-    access_token = access_token[0]
-    from urllib2 import Request, urlopen, URLError
- 
-    headers = {'Authorization': 'OAuth '+access_token}
-    req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
-                  None, headers)
-    try:
-        res = urlopen(req)
-    except URLError, e:
-        if e.code == 401:
-            # Unauthorized - bad token
-            session.pop('access_token', None)
-            return redirect(url_for('login'))
-        return res.read()
- 
-    return res.read()
 
 @app.route('/')
 def index():
