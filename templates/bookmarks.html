@@ -13,16 +13,16 @@
 
       <!-- Example row of columns -->
       <div class="row">
-        {% for class in classes %}
-        <div class="card m-1" style="width: 20rem;">
+        {% for uid,category in bookmarks_categories.iteritems() %}
+        <div class="card m-1" style="width: 20rem;" id="{{uid}}" contenteditable="False">
           <div class="card-block">
-            <h4 class="card-title">{{class.title}}</h4>
-            <p class="card-text">{{class.description}}</p>
+            <h4 class="card-title">{{category.title}}<span class="editable">E</span></h4>
+            <p class="card-text">{{category.description}}</p>
           </div>
           <ul class="list-group list-group-flush">
-            {% for resource in class.resources %}
+            {% for resource in category.resources %}
             <li class="list-group-item">
-              <a href="{{resource.link}}" class="card-link">{{resource.title}}</a>
+              <a href="{{resource.link}}" class="card-link" target="_blank">{{resource.title}}</a>
             </li>
             {% endfor %}
           </ul>

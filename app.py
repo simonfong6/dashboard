@@ -1,9 +1,11 @@
 import json
-from flask import Flask, redirect, url_for, session, render_template, g, request
+import firebase_admin                           # Firebase interfacing
+from firebase_admin import credentials, db
+from flask import Flask, redirect, url_for, session, render_template, g, request, jsonify
 from flask_oauth import OAuth
 from functools import wraps
-from keys import client_id, client_secret
- 
+from keys import client_id, client_secret, databaseURL, certificate
+
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
 GOOGLE_CLIENT_ID = client_id
@@ -29,6 +31,18 @@ google = oauth.remote_app('google',
                           access_token_params={'grant_type': 'authorization_code'},
                           consumer_key=GOOGLE_CLIENT_ID,
                           consumer_secret=GOOGLE_CLIENT_SECRET)
+                          
+def connect_to_db():
+    """ Connect to database and return a database object. """
+    # Reading the certificate file from Google Projects.
+    cred = credentials.Certificate(certificate)
+
+    # Initialize the app with a service account, granting admin privileges
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': databaseURL
+    })
+    
+connect_to_db()
  
 def login_required(f):
     @wraps(f)
@@ -99,117 +113,29 @@ def get_access_token():
 @app.route('/bookmarks')
 @login_required    
 def bookmarks():
-    class Class:
-        def __init__(self):
-            self.title
-            self.description
-            self.resources = []
+    bookmarks = db.reference('bookmarks')
     
-    classes = []
+    bookmarks_categories = bookmarks.get()
     
-    ece172a =   {'title': 'ECE172A',
-                 'description': 'Intro to Intelligent Systems.',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'https://sites.google.com/a/eng.ucsd.edu/ece-172a-winter-2018'},
-                                 {'title': 'Piazza Home',
-                                  'link': 'https://piazza.com/class/jc7b0q0r4nn746?cid=8'}
-                                ]
-                }
     
-    ece196 =   {'title': 'ECE 196',
-                 'description': 'Hands on projects.',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'https://ucsdece.wixsite.com/ece196'},
-                                 {'title': 'Piazza',
-                                  'link': 'https://piazza.com/class/jc9y5l4xia1572'}
-                                ]
-                }
+    return render_template('bookmarks.html', 
+                            bookmarks_categories=bookmarks_categories)
+                            
+@app.route('/bookmarks/update', methods=['GET','POST'])                              
+def update_bookmarks():
+    bookmarks = db.reference('bookmarks')
     
-    ece180 =   {'title': 'ECE 180',
-                 'description': 'Software systems.',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'https://share.sophorus.com/courses/ece180'},
-                                 {'title': 'Piazza',
-                                  'link': 'https://piazza.com/class/jcbdud70lrj7hx?cid=6'}
-                                ]
-                }
-                
-    ece175a =   {'title': 'ECE 175A',
-                 'description': 'Elements of Machine Learning',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'http://www.svcl.ucsd.edu/courses/ece175/'},
-                                 {'title': 'Piazza',
-                                  'link': 'https://piazza.com/class/jcb4qckxatl65a'}
-                                ]
-                }
-    ece115 =   {'title': 'ECE 115',
-                 'description': '',
-                 'resources':   [
-                                 {'title': 'TED',
-                                  'link': 'https://tritoned.ucsd.edu/webapps/blackboard/content/listContent.jsp?course_id=_24780_1&content_id=_1133772_1&mode=reset'},
-                                 {'title': 'Piazza',
-                                  'link': 'https://piazza.com/class/jbyn4p6ve955v1'}
-                                ]
-                }
+    bookmark = request.form.to_dict(flat=False)
     
-    ece107 =   {'title': 'ECE 107',
-                 'description': 'Electromagnetism',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'https://sites.google.com/a/eng.ucsd.edu/ece-107-winter-2018/'},
-                                 {'title': '',
-                                  'link': ''}
-                                ]
-                }
-                
-    ece174 =   {'title': 'ECE 174',
-                 'description': 'Linear and non-linear optimization.',
-                 'resources':   [
-                                 {'title': 'Class Website',
-                                  'link': 'http://dsp.ucsd.edu/~kreutz/ECE174.html'},
-                                 {'title': 'Grade Source 4784',
-                                  'link': 'http://www.gradesource.com/reports/4613/29551/index.html'}
-                                ]
-                }
-                
-    ucsd =   {'title': 'UCSD',
-                 'description': 'Resources',
-                 'resources':   [
-                                 {'title': 'Email',
-                                  'link': 'http://dsp.ucsd.edu/~kreutz/ECE174.html'},
-                                 {'title': 'Outreach',
-                                  'link': 'https://drive.google.com/drive/folders/0B5GEKs6sCkXNNkpqQ2JtMVFqVDQl'},
-                                  {'title': 'Google Drive',
-                                  'link': 'https://drive.google.com/drive/u/1/my-drive'},
-                                  {'title': 'TED',
-                                  'link': 'https://tritoned.ucsd.edu/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_1_1'},
-                                  {'title': 'Web Reg',
-                                  'link': 'https://act.ucsd.edu/webreg2/start'},
-                                  {'title': 'Academic History',
-                                  'link': 'https://act.ucsd.edu/studentAcademicHistory/academichistorystudentdisplay.htm'},
-                                  {'title': 'Financial Aid',
-                                  'link': 'https://act.ucsd.edu/studentFinancialAward/entry'},
-                                  {'title': 'FAFSA',
-                                  'link': 'https://fafsa.ed.gov/FAFSA/app/fafsa?locale=en_US'},
-                                  {'title': 'Internships Tracker',
-                                  'link': 'https://docs.google.com/spreadsheets/d/1miRTPlzELXdVEKzsWxgyZkFp0qFCyeiPlLFyFKyIQzY/edit#gid=0'},
-                                ]
-                }
     
-    classes.append(ece172a)
-    classes.append(ece196)
-    classes.append(ece180)
-    classes.append(ece175a)
-    classes.append(ece115)
-    classes.append(ece174)
-    classes.append(ece107)
-    classes.append(ucsd)
     
-    return render_template('bookmarks.html', classes=classes)
+    #bookmarks.update(bookmark)
+    
+    print(bookmark)
+    if bookmark == '':
+        print('empty')
+    
+    return jsonify({'data':'fail'})
  
  
 def main():
