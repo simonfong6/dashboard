@@ -133,3 +133,11 @@ body {
     }
 }
 /* END Login Form */
+
+/* Editable */
+
+.editable {
+    float: right;
+}
+
+/* END Editable */
