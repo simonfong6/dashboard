@@ -1,0 +1,26 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: ${{ SERVICE_NAME }}
+spec:
+  selector:
+    matchLabels:
+      app: ${{ SERVICE_NAME }}
+      tier: backend
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: ${{ SERVICE_NAME }}
+        tier: backend
+    spec:
+      containers:
+        - name: ${{ SERVICE_NAME }}
+          image: simonfong6/${{ SERVICE_NAME }}:0.0.1
+          ports:
+            - containerPort: ${{ SERVICE_PORT }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
